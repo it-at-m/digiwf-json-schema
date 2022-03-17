@@ -211,6 +211,19 @@ public class ArraySchema
     }
 
     @Override
+    public boolean isReadOnlyProperty(String field) {
+        String[] headAndTail = headAndTailOfJsonPointerFragment(field);
+        String remaining = headAndTail[1];
+        boolean hasRemaining = remaining != null;
+
+        if (Boolean.TRUE.equals(this.isReadOnly())) {
+            return !hasRemaining || definesProperty(field);
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean definesProperty(String field) {
         String[] headAndTail = headAndTailOfJsonPointerFragment(field);
         String nextToken = headAndTail[0];

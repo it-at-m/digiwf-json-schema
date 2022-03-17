@@ -15,13 +15,38 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ReadOnlyTest {
 
     @Test
-    public void validateEmptyObject() throws IOException, URISyntaxException {
+    public void validateComplexObjectSchema() throws IOException, URISyntaxException {
         final String rawSchema = this.getSchemaString("/org/everit/json/schema/extension/complexObjectReadonlyValidationSchemaMultiple.json");
 
         final Schema schema = createSchema(rawSchema);
         final boolean b = schema.isReadOnlyProperty("#/fahrzeugdaten/weiteresFahrzeug");
 
         assertTrue(b);
+    }
+
+    @Test
+    public void validateArray() throws IOException, URISyntaxException {
+        final String rawSchema = this.getSchemaString("/org/everit/json/schema/extension/complexObjectReadonlyValidationSchemaMultiple.json");
+
+        final Schema schema = createSchema(rawSchema);
+        final boolean fahrzeuge = schema.isReadOnlyProperty("#/fahrzeugdaten/fahrzeuge");
+        assertTrue(fahrzeuge);
+
+        final boolean fahrzeugeProp = schema.isReadOnlyProperty("#/fahrzeugdaten/fahrzeuge/any/deutschesKennzeichen");
+        assertTrue(fahrzeugeProp);
+    }
+
+    @Test
+    public void validateSimpleObjectSchema() throws IOException, URISyntaxException {
+        final String rawSchema = this.getSchemaString("/org/everit/json/schema/extension/simpleObjectReadOnlySchema.json");
+
+        final Schema schema = createSchema(rawSchema);
+        final boolean readOnlyProp = schema.isReadOnlyProperty("#/readOnlyProp");
+        assertTrue(readOnlyProp);
+
+        final boolean readOnlySection = schema.isReadOnlyProperty("#/readOnlySection");
+        assertTrue(readOnlySection);
+
     }
 
     private String getSchemaString(final String path) throws IOException, URISyntaxException {
