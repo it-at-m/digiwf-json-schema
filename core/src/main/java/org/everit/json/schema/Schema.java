@@ -217,7 +217,6 @@ public abstract class Schema {
         return false;
     }
 
-
     /**
      * Determines if this {@code Schema} instance defines the object property as readOnly.
      * definesProperty should be checked first.
@@ -229,7 +228,6 @@ public abstract class Schema {
     public boolean isReadOnlyProperty(String field) {
         return Boolean.TRUE.equals(this.isReadOnly());
     }
-
 
     /**
      * Shared method for {@link #definesProperty(String)} implementations.
