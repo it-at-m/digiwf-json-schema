@@ -46,7 +46,18 @@ public class ReadOnlyTest {
 
         final boolean readOnlySection = schema.isReadOnlyProperty("#/readOnlySection");
         assertTrue(readOnlySection);
+    }
 
+    @Test
+    public void checkDefinesPropertyComplexConditionalSchema() throws URISyntaxException, IOException {
+        final String rawSchema = this.getSchemaString("/org/everit/json/schema/extension/complexConditionalSchema.json");
+
+        final Schema schema = createSchema(rawSchema);
+
+        final boolean d = schema.definesProperty("#/antragsdaten/datumAntragstellung/stringProp1");
+        assertTrue(d);
+        final boolean b = schema.isReadOnlyProperty("#/antragsdaten/datumAntragstellung/stringProp1");
+        assertTrue(b);
     }
 
     private String getSchemaString(final String path) throws IOException, URISyntaxException {
