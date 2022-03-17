@@ -20,9 +20,9 @@ jobs:
           java-version: 11
 
       - name: Release Maven package
-        working-directory: ./core
         uses: samuelmeuli/action-maven-publish@v1
         with:
+          working-directory: ./core
           gpg_private_key: ${{ secrets.gpg_private_key }}
           gpg_passphrase: ${{ secrets.gpg_passphrase }}
           nexus_username: ${{ secrets.nexus_username }}
