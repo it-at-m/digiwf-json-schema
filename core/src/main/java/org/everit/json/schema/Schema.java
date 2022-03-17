@@ -1,14 +1,14 @@
 package org.everit.json.schema;
 
-import static java.util.Collections.unmodifiableMap;
+import org.everit.json.schema.internal.JSONPrinter;
+import org.json.JSONWriter;
 
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.everit.json.schema.internal.JSONPrinter;
-import org.json.JSONWriter;
+import static java.util.Collections.unmodifiableMap;
 
 /**
  * Superclass of all other schema validator classes of this package.
@@ -20,8 +20,7 @@ public abstract class Schema {
      * used to load the generic properties of all types of schemas like {@code title} or
      * {@code description}.
      *
-     * @param <S>
-     *         the type of the schema being built by the builder subclass.
+     * @param <S> the type of the schema being built by the builder subclass.
      */
     public abstract static class Builder<S extends Schema> {
 
@@ -124,8 +123,7 @@ public abstract class Schema {
     /**
      * Constructor.
      *
-     * @param builder
-     *         the builder containing the optional title, description and id attributes of the schema
+     * @param builder the builder containing the optional title, description and id attributes of the schema
      */
     protected Schema(Builder<?> builder) {
         this.title = builder.title;
@@ -143,10 +141,8 @@ public abstract class Schema {
     /**
      * Performs the schema validation.
      *
-     * @param subject
-     *         the object to be validated
-     * @throws ValidationException
-     *         if the {@code subject} is invalid against this schema.
+     * @param subject the object to be validated
+     * @throws ValidationException if the {@code subject} is invalid against this schema.
      */
     public void validate(Object subject) {
         Validator.builder().build().performValidation(this, subject);
@@ -199,7 +195,7 @@ public abstract class Schema {
      * }
      * </code>
      * </pre>
-     *
+     * <p>
      * You can also check if a subschema of an array defines a property. In that case, to traverse the array, you can either use
      * an integer array index, or the {@code "all"} or {@code "any"} meta-indexes. For example, in the above schema
      * <ul>
@@ -213,14 +209,27 @@ public abstract class Schema {
      * </ul>
      * The default implementation of this method always returns false.
      *
-     * @param field
-     *         should be a JSON pointer in its string representation.
+     * @param field should be a JSON pointer in its string representation.
      * @return {@code true} if the propertty denoted by {@code field} is defined by this schema
      * instance
      */
     public boolean definesProperty(String field) {
         return false;
     }
+
+
+    /**
+     * Determines if this {@code Schema} instance defines the object property as readOnly.
+     * definesProperty should be checked first.
+     * does not work with arrays right now
+     *
+     * @param field field that is checked
+     * @return {@code true} if the property denoted by {@code field} is defined by this schema and readOnly
+     */
+    public boolean isReadOnlyProperty(String field) {
+        return Boolean.TRUE.equals(this.isReadOnly());
+    }
+
 
     /**
      * Shared method for {@link #definesProperty(String)} implementations.
@@ -324,8 +333,7 @@ public abstract class Schema {
      * <p>
      * It is used by {@link #toString()} to serialize the schema instance into its JSON representation.
      *
-     * @param writer
-     *         it will receive the schema description
+     * @param writer it will receive the schema description
      */
     public void describeTo(JSONPrinter writer) {
         accept(new ToStringVisitor(writer));
@@ -338,8 +346,7 @@ public abstract class Schema {
      * overriding subclasses don't have to open and close the object with {@link JSONWriter#object()}
      * and {@link JSONWriter#endObject()}.
      *
-     * @param writer
-     *         it will receive the schema description
+     * @param writer it will receive the schema description
      */
     void describePropertiesTo(JSONPrinter writer) {
 
@@ -371,8 +378,7 @@ public abstract class Schema {
      * <p>
      * http://www.artima.com/lejava/articles/equality.html
      *
-     * @param other
-     *         the subject of comparison
+     * @param other the subject of comparison
      * @return {@code true } if {@code this} can be equal to {@code other}
      */
     protected boolean canEqual(Object other) {

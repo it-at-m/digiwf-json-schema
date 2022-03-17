@@ -1,23 +1,15 @@
 package org.everit.json.schema;
 
-import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toMap;
-import static org.everit.json.schema.JSONPointer.unescape;
-
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.regex.Pattern;
-
 import org.everit.json.schema.regexp.JavaUtilRegexpFactory;
 import org.everit.json.schema.regexp.Regexp;
 import org.everit.json.schema.regexp.RegexpFactory;
+
+import java.util.*;
+import java.util.regex.Pattern;
+
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toMap;
+import static org.everit.json.schema.JSONPointer.unescape;
 
 /**
  * Object schema validator.
@@ -67,11 +59,9 @@ public class ObjectSchema extends Schema {
         /**
          * Adds a property schema.
          *
-         * @param propName
-         *         the name of the property which' expected schema must be {@code schema}
-         * @param schema
-         *         if the subject under validation has a property named {@code propertyName} then its
-         *         value will be validated using this {@code schema}
+         * @param propName the name of the property which' expected schema must be {@code schema}
+         * @param schema   if the subject under validation has a property named {@code propertyName} then its
+         *                 value will be validated using this {@code schema}
          * @return {@code this}
          */
         public Builder addPropertySchema(String propName, Schema schema) {
@@ -122,12 +112,10 @@ public class ObjectSchema extends Schema {
         /**
          * Adds a property dependency.
          *
-         * @param ifPresent
-         *         the name of the property which if is present then a property with name
-         *         {@code mustBePresent} is mandatory
-         * @param mustBePresent
-         *         a property with this name must exist in the subject under validation if a property
-         *         named {@code ifPresent} exists
+         * @param ifPresent     the name of the property which if is present then a property with name
+         *                      {@code mustBePresent} is mandatory
+         * @param mustBePresent a property with this name must exist in the subject under validation if a property
+         *                      named {@code ifPresent} exists
          * @return {@code this}
          */
         public Builder propertyDependency(String ifPresent, String mustBePresent) {
@@ -197,8 +185,7 @@ public class ObjectSchema extends Schema {
     /**
      * Constructor.
      *
-     * @param builder
-     *         the builder object containing validation criteria
+     * @param builder the builder object containing validation criteria
      */
     public ObjectSchema(Builder builder) {
         super(builder);
@@ -268,7 +255,8 @@ public class ObjectSchema extends Schema {
         return propertyNameSchema;
     }
 
-    @Override void accept(Visitor visitor) {
+    @Override
+    void accept(Visitor visitor) {
         visitor.visitObjectSchema(this);
     }
 
@@ -284,7 +272,31 @@ public class ObjectSchema extends Schema {
         return oneOrMoreDefaultProperty;
     }
 
+    @Override
+    public boolean isReadOnlyProperty(String field) {
+        if (Boolean.TRUE.equals(this.isReadOnly())) {
+            return this.definesProperty(field);
+        }
 
+        String[] headAndTail = headAndTailOfJsonPointerFragment(field);
+        String nextToken = headAndTail[0];
+        String remaining = headAndTail[1];
+        field = headAndTail[2];
+        return !field.isEmpty() && (definesIsReadOnlySchemaProperty(nextToken, remaining));
+    }
+
+    private boolean definesIsReadOnlySchemaProperty(String current, String remaining) {
+        current = unescape(current);
+        boolean hasSuffix = !(remaining == null);
+        if (propertySchemas.containsKey(current)) {
+            if (hasSuffix) {
+                return propertySchemas.get(current).isReadOnlyProperty(remaining);
+            } else {
+                return Boolean.TRUE.equals(propertySchemas.get(current).isReadOnly());
+            }
+        }
+        return false;
+    }
 
     @Override
     public boolean definesProperty(String field) {

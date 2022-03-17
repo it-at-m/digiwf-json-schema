@@ -1,13 +1,12 @@
 package org.everit.json.schema;
 
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Validator for {@code allOf}, {@code oneOf}, {@code anyOf} schemas.
@@ -61,11 +60,9 @@ public class CombinedSchema extends Schema {
          * Throws a {@link ValidationException} if the implemented criterion is not fulfilled by the
          * {@code subschemaCount} and the {@code matchingSubschemaCount}.
          *
-         * @param subschemaCount
-         *         the total number of checked subschemas
-         * @param matchingSubschemaCount
-         *         the number of subschemas which successfully validated the subject (did not throw
-         *         {@link ValidationException})
+         * @param subschemaCount         the total number of checked subschemas
+         * @param matchingSubschemaCount the number of subschemas which successfully validated the subject (did not throw
+         *                               {@link ValidationException})
          */
         void validate(int subschemaCount, int matchingSubschemaCount);
 
@@ -127,7 +124,8 @@ public class CombinedSchema extends Schema {
                     }
                 }
 
-                @Override public String toString() {
+                @Override
+                public String toString() {
                     return "oneOf";
                 }
             };
@@ -161,8 +159,7 @@ public class CombinedSchema extends Schema {
     /**
      * Constructor.
      *
-     * @param builder
-     *         the builder containing the validation criterion and the subschemas to be checked
+     * @param builder the builder containing the validation criterion and the subschemas to be checked
      */
     public CombinedSchema(Builder builder) {
         super(builder);
@@ -196,24 +193,24 @@ public class CombinedSchema extends Schema {
         return synthetic;
     }
 
-    @Override void accept(Visitor visitor) {
+    @Override
+    void accept(Visitor visitor) {
         visitor.visitCombinedSchema(this);
     }
 
     @Override
     public boolean definesProperty(String field) {
-        List<Schema> matching = new ArrayList<>();
-        for (Schema subschema : subschemas) {
-            if (subschema.definesProperty(field)) {
-                matching.add(subschema);
-            }
+        return subschemas.stream()
+                .anyMatch(schema -> schema.definesProperty(field));
+    }
+
+    @Override
+    public boolean isReadOnlyProperty(String field) {
+        if (Boolean.TRUE.equals(this.isReadOnly())) {
+            return definesProperty(field);
         }
-        try {
-            criterion.validate(subschemas.size(), matching.size());
-        } catch (ValidationException e) {
-            return false;
-        }
-        return true;
+        return subschemas.stream()
+                .anyMatch(schema -> schema.isReadOnlyProperty(field));
     }
 
     @Override

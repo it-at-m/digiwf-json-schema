@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.everit.json</groupId>
-        <artifactId>org.everit.json.schema.tests.parent</artifactId>
+        <groupId>io.muenchendigital.json</groupId>
+        <artifactId>org.everit.json.schema.parent</artifactId>
         <version>0.0.0-develop</version>
     </parent>
 

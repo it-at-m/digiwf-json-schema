@@ -1,13 +1,10 @@
 package org.everit.json.schema;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-import org.everit.json.schema.internal.JSONPrinter;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Array schema validator.
