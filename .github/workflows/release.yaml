@@ -10,6 +10,9 @@ on: [ push ]
 jobs:
   release:
     runs-on: ubuntu-18.04
+    defaults:
+      run:
+        working-directory: ./core
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v2
@@ -22,7 +25,6 @@ jobs:
       - name: Release Maven package
         uses: samuelmeuli/action-maven-publish@v1
         with:
-          working-directory: ./core
           gpg_private_key: ${{ secrets.gpg_private_key }}
           gpg_passphrase: ${{ secrets.gpg_passphrase }}
           nexus_username: ${{ secrets.nexus_username }}
