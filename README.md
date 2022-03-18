@@ -44,9 +44,9 @@ Add the following dependency to your `pom.xml`:
 
 ```xml
 <dependency>
-	<groupId>com.github.erosb</groupId>
-	<artifactId>everit-json-schema</artifactId>
-	<version>1.14.0</version>
+    <groupId>io.muenchendigital.digiwf</groupId>
+    <artifactId>digiwf-json-schema</artifactId>
+    <version>0.0.1</version>
 </dependency>
 ```
 

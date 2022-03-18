@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.everit.json</groupId>
-        <artifactId>org.everit.json.schema.tests.parent</artifactId>
-        <version>0.0.0-develop</version>
+        <groupId>io.muenchendigital.digiwf</groupId>
+        <artifactId>digiwf.json.schema.parent</artifactId>
+        <version>0.0.1</version>
     </parent>
 
     <artifactId>org.everit.json.schema.tests.vanilla</artifactId>
@@ -35,8 +35,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.everit.json</groupId>
-            <artifactId>org.everit.json.schema</artifactId>
+            <groupId>io.muenchendigital.digiwf</groupId>
+            <artifactId>digiwf-json-schema</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

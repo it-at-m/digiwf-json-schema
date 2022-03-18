@@ -1,10 +1,10 @@
 package org.everit.json.schema;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * This class is used by {@link org.everit.json.schema.loader.SchemaLoader} to resolve JSON pointers
@@ -42,7 +42,8 @@ public class ReferenceSchema extends Schema {
             return this;
         }
 
-        @Override public ReferenceSchema.Builder unprocessedProperties(Map<String, Object> unprocessedProperties) {
+        @Override
+        public ReferenceSchema.Builder unprocessedProperties(Map<String, Object> unprocessedProperties) {
             if (retval != null) {
                 retval.unprocessedProperties = new HashMap<>(unprocessedProperties);
             }
@@ -50,7 +51,8 @@ public class ReferenceSchema extends Schema {
             return this;
         }
 
-        @Override public ReferenceSchema.Builder title(String title) {
+        @Override
+        public ReferenceSchema.Builder title(String title) {
             if (retval != null) {
                 retval.title = title;
             }
@@ -58,7 +60,8 @@ public class ReferenceSchema extends Schema {
             return this;
         }
 
-        @Override public ReferenceSchema.Builder description(String description) {
+        @Override
+        public ReferenceSchema.Builder description(String description) {
             if (retval != null) {
                 retval.description = description;
             }
@@ -66,7 +69,8 @@ public class ReferenceSchema extends Schema {
             return this;
         }
 
-        @Override public ReferenceSchema.Builder schemaLocation(SchemaLocation location) {
+        @Override
+        public ReferenceSchema.Builder schemaLocation(SchemaLocation location) {
             if (retval != null) {
                 retval.schemaLocation = location;
             }
@@ -106,6 +110,14 @@ public class ReferenceSchema extends Schema {
     }
 
     @Override
+    public boolean isReadOnlyProperty(String field) {
+        if (referredSchema == null) {
+            throw new IllegalStateException("referredSchema must be injected before validation");
+        }
+        return referredSchema.isReadOnlyProperty(field);
+    }
+
+    @Override
     public boolean definesProperty(String field) {
         if (referredSchema == null) {
             throw new IllegalStateException("referredSchema must be injected before validation");
@@ -125,8 +137,7 @@ public class ReferenceSchema extends Schema {
      * Called by {@link org.everit.json.schema.loader.SchemaLoader#load()} to set the referred root
      * schema after completing the loading process of the entire schema document.
      *
-     * @param referredSchema
-     *         the referred schema
+     * @param referredSchema the referred schema
      */
     public void setReferredSchema(final Schema referredSchema) {
         if (this.referredSchema != null) {
@@ -164,23 +175,28 @@ public class ReferenceSchema extends Schema {
         return other instanceof ReferenceSchema;
     }
 
-    @Override void accept(Visitor visitor) {
+    @Override
+    void accept(Visitor visitor) {
         visitor.visitReferenceSchema(this);
     }
 
-    @Override public Map<String, Object> getUnprocessedProperties() {
+    @Override
+    public Map<String, Object> getUnprocessedProperties() {
         return unprocessedProperties == null ? super.getUnprocessedProperties() : unprocessedProperties;
     }
 
-    @Override public String getTitle() {
+    @Override
+    public String getTitle() {
         return title == null ? super.getTitle() : title;
     }
 
-    @Override public String getDescription() {
+    @Override
+    public String getDescription() {
         return description == null ? super.getDescription() : description;
     }
 
-    @Override public SchemaLocation getLocation() {
+    @Override
+    public SchemaLocation getLocation() {
         return schemaLocation == null ? super.getLocation() : schemaLocation;
     }
 }
