@@ -1,13 +1,10 @@
 package org.everit.json.schema;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-import org.everit.json.schema.internal.JSONPrinter;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Array schema validator.
@@ -211,6 +208,19 @@ public class ArraySchema
     @Override
     void accept(Visitor visitor) {
         visitor.visitArraySchema(this);
+    }
+
+    @Override
+    public boolean isReadOnlyProperty(String field) {
+        String[] headAndTail = headAndTailOfJsonPointerFragment(field);
+        String remaining = headAndTail[1];
+        boolean hasRemaining = remaining != null;
+
+        if (Boolean.TRUE.equals(this.isReadOnly())) {
+            return !hasRemaining || definesProperty(field);
+        }
+
+        return false;
     }
 
     @Override

@@ -1,18 +1,12 @@
 package org.everit.json.schema;
 
-import static org.everit.json.schema.FalseSchema.INSTANCE;
-import static org.everit.json.schema.JSONMatcher.sameJsonAs;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.StringWriter;
-
+import com.google.common.collect.ImmutableMap;
 import org.everit.json.schema.internal.JSONPrinter;
 import org.json.JSONObject;
-
-import com.google.common.collect.ImmutableMap;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import static org.everit.json.schema.JSONMatcher.sameJsonAs;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ToStringTest {
 
@@ -20,7 +14,8 @@ public class ToStringTest {
 
         static class CustomSchemaBuilder extends Schema.Builder<CustomSchema> {
 
-            @Override public CustomSchema build() {
+            @Override
+            public CustomSchema build() {
                 return new CustomSchema(this);
             }
         }
@@ -28,18 +23,19 @@ public class ToStringTest {
         /**
          * Constructor.
          *
-         * @param builder
-         *         the builder containing the optional title, description and id attributes of the schema
+         * @param builder the builder containing the optional title, description and id attributes of the schema
          */
         protected CustomSchema(Builder<?> builder) {
             super(builder);
         }
 
-        @Override void accept(Visitor visitor) {
+        @Override
+        void accept(Visitor visitor) {
             visitor.visitSchema(this);
         }
 
-        @Override void describePropertiesTo(JSONPrinter writer) {
+        @Override
+        void describePropertiesTo(JSONPrinter writer) {
             writer.key("custom").value("schema");
         }
 
@@ -73,16 +69,16 @@ public class ToStringTest {
         String actual = subject.toString();
         assertThat(new JSONObject(actual), sameJsonAs(LOADER.readObj("arrayschema-list.json")));
     }
-
-    @Test
-    @Disabled("throws JSONException - bug in JSONWriter")
-    public void testFalseSchema() {
-        StringWriter w = new StringWriter();
-        JSONPrinter writer = new JSONPrinter(w);
-        new ToStringVisitor(writer).visit(INSTANCE);
-        String actual = w.getBuffer().toString();
-        assertEquals("false", actual);
-    }
+//
+//    @Test
+//    @Disabled("throws JSONException - bug in JSONWriter")
+//    public void testFalseSchema() {
+//        StringWriter w = new StringWriter();
+//        JSONPrinter writer = new JSONPrinter(w);
+//        new ToStringVisitor(writer).visit(INSTANCE);
+//        String actual = w.getBuffer().toString();
+//        assertEquals("false", actual);
+//    }
 
     @Test
     public void idKeywordForDraftV6() {
